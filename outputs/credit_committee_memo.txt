@@ -1,0 +1,91 @@
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+MEMORANDUM
+
+TO      : Head of Credit Risk
+FROM    : Analytics Team
+SUBJECT : Credit Default Prediction Model — Findings & Recommendations
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+EXECUTIVE SUMMARY
+
+We have developed a credit default prediction framework using 150,000
+historical loan applicant records. The model identifies borrowers at
+risk of going 90+ days past due within 24 months, and translates that
+risk into a three-tier approval framework: Approve, Manual Review, Decline.
+
+The recommended production model is LightGBM, which achieved:
+  - AUC-ROC  : 0.8695  (industry benchmark: >0.75)
+  - KS Stat  : 0.5865  (industry benchmark: >0.30)
+  - Gini     : 0.739  (industry benchmark: >0.50)
+
+All three metrics comfortably exceed retail credit benchmarks.
+
+──────────────────────────────────────────────────────
+KEY FINDINGS
+──────────────────────────────────────────────────────
+
+1. DELINQUENCY HISTORY IS THE DOMINANT RISK SIGNAL
+   Borrowers with even one prior 90-day delinquency default at a rate
+   significantly above the portfolio average. We recommend considering
+   a hard rule: any applicant with 2+ prior 90-day delinquencies is
+   declined regardless of score.
+
+2. CREDIT UTILISATION IS THE SECOND-STRONGEST SIGNAL
+   Borrowers running above 80% utilisation on revolving credit show
+   materially elevated default rates. This segment should be reviewed
+   carefully even when the overall score is borderline.
+
+3. INCOME NON-DISCLOSURE IS ITSELF A RISK INDICATOR
+   Approximately 20% of applicants did not declare monthly income.
+   This group defaults at a higher rate than income-disclosing
+   applicants — suggesting that non-disclosure is correlated with
+   financial stress, not merely administrative oversight.
+
+4. THE COST OF ERRORS IS ASYMMETRIC
+   Missing a defaulter costs approximately ₹3,00,000 (60% LGD on
+   ₹5,00,000 average loan). Wrongly rejecting a good borrower costs
+   approximately ₹1,80,000 in foregone interest. The optimal threshold
+   reflects this 1.7:1 cost asymmetry.
+
+──────────────────────────────────────────────────────
+RECOMMENDATIONS
+──────────────────────────────────────────────────────
+
+1. ADOPT THE THREE-TIER DECISION FRAMEWORK
+   Deploy the scorecard as the primary decision tool. Route borderline
+   applications (score 580–719) to credit officer review rather than
+   straight-through processing.
+
+2. IMPLEMENT QUARTERLY THRESHOLD REVIEW
+   The optimal approval threshold should be recalibrated every quarter
+   as portfolio performance data accumulates. Model performance should
+   be monitored via monthly Gini and KS tracking.
+
+3. RETAIN THE INCOME MISSING FLAG IN PRODUCTION
+   The income_missing feature must be computed at the point of
+   application — not imputed away. Its predictive value depends on
+   capturing the absence of data, not filling it.
+
+4. ESTABLISH A REJECT INFERENCE PROCESS
+   The current model is trained only on approved applicants from
+   historical data. Performance on declined segments is unknown.
+   A reject inference exercise should be scoped for the next model
+   iteration.
+
+5. SCHEDULE ANNUAL MODEL REFRESH
+   Credit risk models decay as borrower behaviour and macroeconomic
+   conditions change. An annual rebuild is standard practice.
+
+──────────────────────────────────────────────────────
+LIMITATIONS
+──────────────────────────────────────────────────────
+
+- The dataset is U.S.-based. Indian credit behaviour, bureau coverage,
+  and regulatory norms differ. Feature selection and thresholds should
+  be validated on domestic portfolio data before production deployment.
+- Model does not account for macroeconomic regime changes (rate cycles,
+  unemployment shocks).
+- No reject inference has been applied.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
