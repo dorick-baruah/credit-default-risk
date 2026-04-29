@@ -61,14 +61,14 @@ At this threshold: 93.3% approval rate, 70.3% of defaulters caught.
 
 ## Project Structure
 
-| Section | Business Question | Status |
-|---------|------------------|--------|
-| 1 — Data Quality Assessment | What does our applicant pool look like? | ✅ Complete |
-| 2 — Exploratory Data Analysis | Which borrower traits predict default? | ✅ Complete |
-| 3 — Feature Engineering | How do we translate data into risk signals? | ✅ Complete |
-| 4 — Model Building & Evaluation | Which model best separates defaulters? | ✅ Complete |
-| 5 — Cost-Benefit & Decision Framework | What does the right threshold cost? | ✅ Complete |
-| 6 — Scorecard & Recommendations | How do we operationalise this? | ✅ Complete |
+| Section | Business Question |
+|---------|------------------|
+| 1 — Data Quality Assessment | What does our applicant pool look like? | 
+| 2 — Exploratory Data Analysis | Which borrower traits predict default? | 
+| 3 — Feature Engineering | How do we translate data into risk signals? | 
+| 4 — Model Building & Evaluation | Which model best separates defaulters? | 
+| 5 — Cost-Benefit & Decision Framework | What does the right threshold cost? | 
+| 6 — Scorecard & Recommendations | How do we operationalise this? | 
 
 ---
 
